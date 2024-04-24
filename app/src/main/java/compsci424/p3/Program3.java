@@ -214,4 +214,12 @@ public class Program3 {
         }
         return allocatedResources;
     }
+
+    private static void manualMode() {
+
+    }
+
+    private static void autoMode() {
+
+    }
 }

@@ -1,8 +1,10 @@
-package compsci424.p3;
-
 /**
  * Represents the Banker's Algorithm for resource allocation.
+ * 
+ * ------ NOT CURRENTLY MULTITHREADED ------------
  */
+package compsci424.p3;
+
 public class BankersAlgo {
 
     private int numProcesses;
