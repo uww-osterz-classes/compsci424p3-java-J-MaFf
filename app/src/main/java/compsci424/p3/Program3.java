@@ -97,7 +97,8 @@ public class Program3 {
             // 3. Use the rest of the setup file to initialize the
             // data structures
 
-            int[][] maxResources = setMaxResources(numProcesses, numResources, setupFileReader);
+            int[][] maxResources = readMaxResources(numProcesses, numResources, setupFileReader);
+            int[][] allocation = readAllocation(numProcesses, numResources, setupFileReader);
 
             setupFileReader.close(); // done reading the file, so close it
         } catch (IOException e) {
@@ -120,7 +121,24 @@ public class Program3 {
 
     }
 
-    private static int[][] setMaxResources(int numProcesses, int numResources, BufferedReader setupFileReader) {
+    private static int[][] readMaxResources(int numProcesses, int numResources, BufferedReader setupFileReader)
+            throws IOException {
+        String line = setupFileReader.readLine();
+        if (!line.equals("Available")) {
+            throw new IOException(
+                    "Current line is not 'Available', which means the file format is wrong or another error has happened.");
+        }
+        line = setupFileReader.readLine();
+        String[] text = line.split(" ");
+        int[] parts = new int[text.length];
+        for (int i = 0; i < text.length; i++) {
+            parts[i] = Integer.parseInt(text[i]);
+        }
 
+    }
+
+    private static int[][] readAllocation(int numProcesses, int numResources, BufferedReader setupFileReader) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAllocation'");
     }
 }
