@@ -150,6 +150,15 @@ public class Program3 {
         return parts;
     }
 
+    /**
+     * Reads the maximum resources for each process from the setup file.
+     *
+     * @param numProcesses    the number of processes
+     * @param numResources    the number of resources
+     * @param setupFileReader the BufferedReader used to read the setup file
+     * @return a 2D array representing the maximum resources for each process
+     * @throws IOException if an I/O error occurs while reading the setup file
+     */
     private static int[][] readMaxResources(int numProcesses, int numResources, BufferedReader setupFileReader)
             throws IOException {
         String line = setupFileReader.readLine();
