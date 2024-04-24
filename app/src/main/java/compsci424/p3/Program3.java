@@ -180,8 +180,32 @@ public class Program3 {
 
     }
 
-    private static int[][] readAllocation(int numProcesses, int numResources, BufferedReader setupFileReader) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllocation'");
+    /**
+     * Reads the allocation of resources for each process from the setup file.
+     *
+     * @param numProcesses    the number of processes
+     * @param numResources    the number of resources
+     * @param setupFileReader the BufferedReader used to read the setup file
+     * @return a 2D array representing the allocated resources for each process
+     * @throws IOException if an I/O error occurs while reading the setup file
+     */
+    private static int[][] readAllocation(int numProcesses, int numResources, BufferedReader setupFileReader)
+            throws IOException {
+        String line = setupFileReader.readLine();
+        if (!line.equals("Allocation")) {
+            throw new IOException(
+                    "Current line is not 'Allocation', which means the file format is wrong or another error has happened.");
+        }
+        int[][] allocatedResources = new int[numProcesses][numResources];
+        for (int i = 0; i < numProcesses; i++) {
+            line = setupFileReader.readLine();
+            String[] text = line.split(" ");
+            int[] parts = new int[numResources];
+            for (int j = 0; j < numResources; j++) {
+                parts[j] = Integer.parseInt(text[j]);
+            } // At this point, you have the max resources for process i
+            allocatedResources[i] = parts;
+        }
+        return allocatedResources;
     }
 }
