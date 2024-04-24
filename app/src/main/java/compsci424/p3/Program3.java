@@ -97,6 +97,8 @@ public class Program3 {
             // 3. Use the rest of the setup file to initialize the
             // data structures
 
+            int[][] maxResources = setMaxResources(numProcesses, numResources, setupFileReader);
+
             setupFileReader.close(); // done reading the file, so close it
         } catch (IOException e) {
             System.err.println("Something went wrong while reading setup file "
@@ -115,6 +117,10 @@ public class Program3 {
         // as separate methods within this class, as separate classes
         // with their own main methods, or as additional code within
         // this main method.
+
+    }
+
+    private static int[][] setMaxResources(int numProcesses, int numResources, BufferedReader setupFileReader) {
 
     }
 }
