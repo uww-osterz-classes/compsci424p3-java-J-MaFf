@@ -52,9 +52,7 @@ public class BankersAlgo {
      * @return true if the system is in a safe state, false otherwise.
      */
     public boolean isSafe() {
-        // Initialize a boolean array 'finish' to keep track of processes that have
-        // finished execution
-        boolean[] finish = new boolean[numProcesses];
+        boolean[] finish = new boolean[numProcesses]; // keep track of processes that have finished execution
 
         // Initialize an integer array 'work' to represent the available resources
         int[] work = new int[numResources];

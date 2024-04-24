@@ -27,6 +27,7 @@ import java.io.IOException;
  */
 public class Program3 {
     // Declare any class/instance variables that you need here.
+    public static BankersAlgo bankersAlgo;
 
     /**
      * @param args Command-line arguments.
@@ -103,7 +104,7 @@ public class Program3 {
 
             setupFileReader.close(); // done reading the file, so close it
 
-            BankersAlgo bankersAlgo = new BankersAlgo(numProcesses, numResources, availableResources, maxResources,
+            bankersAlgo = new BankersAlgo(numProcesses, numResources, availableResources, maxResources,
                     allocation);
         } catch (IOException e) {
             System.err.println("Something went wrong while reading setup file "
@@ -116,6 +117,11 @@ public class Program3 {
         // 4. Check initial conditions to ensure that the system is
         // beginning in a safe state: see "Check initial conditions"
         // in the Program 3 instructions
+
+        if (!bankersAlgo.isSafe()) {
+            System.err.println("Initial conditions are not safe.");
+            System.exit(-1); // exit with an error code
+        }
 
         // 5. Go into either manual or automatic mode, depending on
         // the value of args[0]; you could implement these two modes
