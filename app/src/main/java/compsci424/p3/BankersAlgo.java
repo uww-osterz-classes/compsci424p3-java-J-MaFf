@@ -7,27 +7,27 @@ public class BankersAlgo {
 
     private int numProcesses;
     private int numResources;
+    private int[] availableResources;
     private int[][] maxResources; // Maximum resources that can be allocated to processes
     private int[][] allocation; // Resources currently allocated to processes
     private int[][] need; // Resources needed by processes
-    private int[] availableResources;
 
     /**
      * Initializes a new instance of the BankersAlgo class.
      * 
      * @param numProcesses       The number of processes.
      * @param numResources       The number of resources.
+     * @param availableResources The available resources.
      * @param max                The maximum resources that can be allocated to
      *                           processes.
      * @param allocation         The resources currently allocated to processes.
-     * @param availableResources The available resources.
      */
     public BankersAlgo(int numProcesses, int numResources, int[][] max, int[][] allocation, int[] availableResources) {
         this.numProcesses = numProcesses;
         this.numResources = numResources;
+        this.availableResources = availableResources;
         this.maxResources = max;
         this.allocation = allocation;
-        this.availableResources = availableResources;
         this.need = new int[numProcesses][numResources];
         calculateNeed();
     }
