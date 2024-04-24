@@ -97,7 +97,14 @@ public class Program3 {
             // 3. Use the rest of the setup file to initialize the
             // data structures
 
+            int[] availableResources = readAvailableResources(numProcesses, numResources, setupFileReader);
+            int[][] maxResources = readMaxResources(numProcesses, numResources, setupFileReader);
+            int[][] allocation = readAllocation(numProcesses, numResources, setupFileReader);
+
             setupFileReader.close(); // done reading the file, so close it
+
+            BankersAlgo bankersAlgo = new BankersAlgo(numProcesses, numResources, availableResources, maxResources,
+                    allocation);
         } catch (IOException e) {
             System.err.println("Something went wrong while reading setup file "
                     + args[1] + ". Stack trace follows. Exiting.");
@@ -116,5 +123,89 @@ public class Program3 {
         // with their own main methods, or as additional code within
         // this main method.
 
+    }
+
+    /**
+     * Reads the available resources from the setup file.
+     *
+     * @param numProcesses    the number of processes
+     * @param numResources    the number of resources
+     * @param setupFileReader the BufferedReader object used to read the setup file
+     * @return an array of integers representing the available resources
+     * @throws IOException if an I/O error occurs while reading the setup file
+     */
+    private static int[] readAvailableResources(int numProcesses, int numResources, BufferedReader setupFileReader)
+            throws IOException {
+        String line = setupFileReader.readLine();
+        if (!line.equals("Available")) {
+            throw new IOException(
+                    "Current line is not 'Available', which means the file format is wrong or another error has happened.");
+        }
+        line = setupFileReader.readLine(); // read the next line (the actual data)
+        String[] text = line.split(" ");
+        int[] parts = new int[numResources];
+        for (int i = 0; i < numResources; i++) { // convert the string array to an int array
+            parts[i] = Integer.parseInt(text[i]);
+        }
+        return parts;
+    }
+
+    /**
+     * Reads the maximum resources for each process from the setup file.
+     *
+     * @param numProcesses    the number of processes
+     * @param numResources    the number of resources
+     * @param setupFileReader the BufferedReader used to read the setup file
+     * @return a 2D array representing the maximum resources for each process
+     * @throws IOException if an I/O error occurs while reading the setup file
+     */
+    private static int[][] readMaxResources(int numProcesses, int numResources, BufferedReader setupFileReader)
+            throws IOException {
+        String line = setupFileReader.readLine();
+        if (!line.equals("Max")) {
+            throw new IOException(
+                    "Current line is not 'Max', which means the file format is wrong or another error has happened.");
+        }
+        int[][] maxResources = new int[numProcesses][numResources];
+        for (int i = 0; i < numProcesses; i++) {
+            line = setupFileReader.readLine();
+            String[] text = line.split(" ");
+            int[] parts = new int[numResources];
+            for (int j = 0; j < numResources; j++) {
+                parts[j] = Integer.parseInt(text[j]);
+            } // At this point, you have the max resources for process i
+            maxResources[i] = parts;
+        }
+        return maxResources;
+
+    }
+
+    /**
+     * Reads the allocation of resources for each process from the setup file.
+     *
+     * @param numProcesses    the number of processes
+     * @param numResources    the number of resources
+     * @param setupFileReader the BufferedReader used to read the setup file
+     * @return a 2D array representing the allocated resources for each process
+     * @throws IOException if an I/O error occurs while reading the setup file
+     */
+    private static int[][] readAllocation(int numProcesses, int numResources, BufferedReader setupFileReader)
+            throws IOException {
+        String line = setupFileReader.readLine();
+        if (!line.equals("Allocation")) {
+            throw new IOException(
+                    "Current line is not 'Allocation', which means the file format is wrong or another error has happened.");
+        }
+        int[][] allocatedResources = new int[numProcesses][numResources];
+        for (int i = 0; i < numProcesses; i++) {
+            line = setupFileReader.readLine();
+            String[] text = line.split(" ");
+            int[] parts = new int[numResources];
+            for (int j = 0; j < numResources; j++) {
+                parts[j] = Integer.parseInt(text[j]);
+            } // At this point, you have the max resources for process i
+            allocatedResources[i] = parts;
+        }
+        return allocatedResources;
     }
 }
