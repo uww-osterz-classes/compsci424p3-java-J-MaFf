@@ -102,6 +102,9 @@ public class Program3 {
             int[][] allocation = readAllocation(numProcesses, numResources, setupFileReader);
 
             setupFileReader.close(); // done reading the file, so close it
+
+            BankersAlgo bankersAlgo = new BankersAlgo(numProcesses, numResources, availableResources, maxResources,
+                    allocation);
         } catch (IOException e) {
             System.err.println("Something went wrong while reading setup file "
                     + args[1] + ". Stack trace follows. Exiting.");

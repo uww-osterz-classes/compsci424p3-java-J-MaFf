@@ -22,7 +22,7 @@ public class BankersAlgo {
      *                           processes.
      * @param allocation         The resources currently allocated to processes.
      */
-    public BankersAlgo(int numProcesses, int numResources, int[][] max, int[][] allocation, int[] availableResources) {
+    public BankersAlgo(int numProcesses, int numResources, int[] availableResources, int[][] max, int[][] allocation) {
         this.numProcesses = numProcesses;
         this.numResources = numResources;
         this.availableResources = availableResources;
