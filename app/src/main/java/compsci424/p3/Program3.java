@@ -122,6 +122,15 @@ public class Program3 {
 
     }
 
+    /**
+     * Reads the available resources from the setup file.
+     *
+     * @param numProcesses    the number of processes
+     * @param numResources    the number of resources
+     * @param setupFileReader the BufferedReader object used to read the setup file
+     * @return an array of integers representing the available resources
+     * @throws IOException if an I/O error occurs while reading the setup file
+     */
     private static int[] readAvailableResources(int numProcesses, int numResources, BufferedReader setupFileReader)
             throws IOException {
         String line = setupFileReader.readLine();
