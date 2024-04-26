@@ -56,67 +56,43 @@ public class BankersAlgo {
     public boolean isSafe() {
         boolean[] finish = new boolean[numProcesses]; // keep track of processes that have finished execution
 
-        // Initialize an integer array 'work' to represent the available resources
-        int[] work = new int[numResources];
+        int[] work = new int[numResources]; // represents the available resources
 
-        // Copy the available resources into the 'work' array
         System.arraycopy(availableResources, 0, work, 0, numResources);
 
-        // Start an infinite loop to keep checking for processes that can be allocated
-        // resources
-        while (true) {
-            // 'found' is a flag to check if we found a process that can be allocated
-            // resources in the current iteration
+        while (true) { // keep checking for processes that can be allocated resources
             boolean found = false;
 
-            // Iterate over all processes
             for (int i = 0; i < numProcesses; i++) {
-                // If the process has not finished execution
                 if (!finish[i]) {
                     // Assume that we can allocate resources to the process
                     boolean canAllocate = true;
-
-                    // Check if all the needed resources can be allocated
-                    for (int j = 0; j < numResources; j++) {
-                        // If a needed resource cannot be allocated, set 'canAllocate' to false and
-                        // break the loop
+                    for (int j = 0; j < numResources; j++) { // Check if all the needed resources can be allocated
+                        // If a needed resource cannot be allocated, set 'canAllocate' to false
                         if (need[i][j] > work[j]) {
                             canAllocate = false;
                             break;
                         }
                     }
-
-                    // If we can allocate all the needed resources
-                    if (canAllocate) {
-                        // Allocate the resources and update the 'work' array
+                    if (canAllocate) { // If we can allocate all the needed resources
                         for (int j = 0; j < numResources; j++) {
                             work[j] += allocation[i][j];
                         }
-                        // Mark the process as finished
                         finish[i] = true;
-                        // Set 'found' to true as we found a process that can be allocated resources
-                        found = true;
+                        found = true; // Set 'found' to true as we found a process that can be allocated resources
                     }
                 }
             }
-
-            // If we did not find any process that can be allocated resources, break the
-            // loop
-            if (!found) {
+            if (!found) { // If no process can be allocated resources
                 break;
             }
         }
-
-        // Check if all processes have finished execution
-        for (boolean f : finish) {
-            // If a process has not finished execution, return false
-            if (!f) {
+        for (boolean f : finish) { // Check if all processes have finished execution
+            if (!f) { // If a process has not finished execution, return false
                 return false;
             }
         }
-
-        // If all processes have finished execution, return true
-        return true;
+        return true; // If all processes have finished execution, return true
     }
 
     /**
@@ -190,7 +166,6 @@ public class BankersAlgo {
             allocation[processIndex][i] -= release[i];
             need[processIndex][i] += release[i];
         }
-
         return true;
     }
 }
