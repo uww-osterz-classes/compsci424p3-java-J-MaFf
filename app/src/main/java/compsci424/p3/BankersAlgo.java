@@ -175,12 +175,22 @@ public class BankersAlgo {
      * @param processIndex the index of the process
      * @param release      an array representing the resources to be released
      */
-    public void releaseResources(int processIndex, int[] release) {
+    public boolean releaseResources(int processIndex, int[] release) {
+        // Check if the release is valid
+        for (int i = 0; i < numResources; i++) {
+            if (release[i] < 0 || release[i] > allocation[processIndex][i]) {
+                System.out.println("Error: Invalid release amount");
+                return false; // Do not change the arrays
+            }
+        }
+
+        // Release the resources
         for (int i = 0; i < numResources; i++) {
             availableResources[i] += release[i];
             allocation[processIndex][i] -= release[i];
             need[processIndex][i] += release[i];
         }
 
+        return true;
     }
 }
