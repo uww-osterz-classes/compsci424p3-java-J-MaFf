@@ -242,32 +242,34 @@ public class Program3 {
         Thread[] threads = new Thread[numProcesses];
 
         for (int processID = 0; processID < numProcesses; processID++) {
-            threads[processID] = new Thread(new Runnable() {
+            int pID = processID;
+            threads[pID] = new Thread(new Runnable() {
                 public void run() {
                     for (int j = 0; j < 3; j++) {
                         // Generate random request
-                        int[] request = generateRandomRequest(processID);
+
+                        int[] request = generateRandomRequest(pID);
                         synchronized (bankersAlgo) {
-                            RequestStatus status = bankersAlgo.requestResources(processID, request);
+                            RequestStatus status = bankersAlgo.requestResources(pID, request);
                             if (status == RequestStatus.GRANTED) {
-                                System.out.println("Process " + processID + " has been granted resources.");
+                                System.out.println("Process " + pID + " has been granted resources.");
                             } else if (status == RequestStatus.DENIED) {
-                                System.out.println("Process " + processID + " has been denied resources.");
+                                System.out.println("Process " + pID + " has been denied resources.");
                             } else {
-                                System.out.println("Process " + processID + " has made an invalid request.");
+                                System.out.println("Process " + pID + " has made an invalid request.");
                             }
                         }
 
                         // Generate random release
-                        int[] release = generateRandomRelease();
+                        int[] release = generateRandomRelease(pID);
                         synchronized (bankersAlgo) {
-                            bankersAlgo.releaseResources(release);
+                            bankersAlgo.releaseResources(pID, release);
                         }
                     }
                 }
             });
 
-            threads[processID].start();
+            threads[pID].start();
         }
 
         // Wait for all threads to finish
