@@ -251,19 +251,21 @@ public class Program3 {
                         int[] request = generateRandomRequest(pID);
                         synchronized (bankersAlgo) {
                             RequestStatus status = bankersAlgo.requestResources(pID, request);
-                            if (status == RequestStatus.GRANTED) {
-                                System.out.println("Process " + pID + " has been granted resources.");
-                            } else if (status == RequestStatus.DENIED) {
-                                System.out.println("Process " + pID + " has been denied resources.");
-                            } else {
-                                System.out.println("Process " + pID + " has made an invalid request.");
-                            }
+                            output(pID, request, status, true);
+                            // if (status == RequestStatus.GRANTED) {
+                            // System.out.println("Process " + pID + " has been granted resources.");
+                            // } else if (status == RequestStatus.DENIED) {
+                            // System.out.println("Process " + pID + " has been denied resources.");
+                            // } else {
+                            // System.out.println("Process " + pID + " has made an invalid request.");
+                            // }
                         }
 
                         // Generate random release
                         int[] release = generateRandomRelease(pID);
                         synchronized (bankersAlgo) {
                             bankersAlgo.releaseResources(pID, release);
+                            output(pID, release, RequestStatus.GRANTED, false);
                         }
                     }
                 }
@@ -319,8 +321,26 @@ public class Program3 {
         return release;
     }
 
-    private static void output() {
-
+    public static void output(int processIndex, int[] requestOrRelease, RequestStatus status, boolean isRequest) {
+        String action = isRequest ? "requests" : "releases";
+        String result = "";
+        switch (status) {
+            case GRANTED:
+                result = isRequest ? "granted" : "completed";
+                break;
+            case DENIED:
+                result = "denied";
+                break;
+            case INVALID:
+                result = "invalid";
+                break;
+        }
+        for (int i = 0; i < requestOrRelease.length; i++) {
+            if (requestOrRelease[i] > 0) {
+                System.out.println("Process " + processIndex + " " + action + " " + requestOrRelease[i]
+                        + " units of resource " + i + ": " + result);
+            }
+        }
     }
 
 }
