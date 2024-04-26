@@ -18,6 +18,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
+
+import compsci424.p3.BankersAlgo.RequestStatus;
+
 import java.util.Random;
 
 /**
@@ -245,7 +248,14 @@ public class Program3 {
                         // Generate random request
                         int[] request = generateRandomRequest(processID);
                         synchronized (bankersAlgo) {
-                            bankersAlgo.requestResources(request);
+                            RequestStatus status = bankersAlgo.requestResources(processID, request);
+                            if (status == RequestStatus.GRANTED) {
+                                System.out.println("Process " + processID + " has been granted resources.");
+                            } else if (status == RequestStatus.DENIED) {
+                                System.out.println("Process " + processID + " has been denied resources.");
+                            } else {
+                                System.out.println("Process " + processID + " has made an invalid request.");
+                            }
                         }
 
                         // Generate random release

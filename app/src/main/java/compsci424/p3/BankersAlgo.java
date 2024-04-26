@@ -119,10 +119,24 @@ public class BankersAlgo {
         return true;
     }
 
+    /**
+     * Represents the status of a resource request in the Banker's Algorithm.
+     * The possible values are:
+     * - GRANTED: The request has been granted.
+     * - DENIED: The request has been denied.
+     * - INVALID: The request is invalid.
+     */
     public enum RequestStatus {
         GRANTED, DENIED, INVALID
     }
 
+    /**
+     * Requests the specified resources for the given process.
+     * 
+     * @param processIndex the index of the process
+     * @param request      an array representing the resources to be requested
+     * @return the status of the request
+     */
     public RequestStatus requestResources(int processIndex, int[] request) {
         // Check if the request is valid
         for (int i = 0; i < numResources; i++) {
@@ -153,5 +167,20 @@ public class BankersAlgo {
             }
             return RequestStatus.DENIED;
         }
+    }
+
+    /**
+     * Releases the specified resources from the given process.
+     *
+     * @param processIndex the index of the process
+     * @param release      an array representing the resources to be released
+     */
+    public void releaseResources(int processIndex, int[] release) {
+        for (int i = 0; i < numResources; i++) {
+            availableResources[i] += release[i];
+            allocation[processIndex][i] -= release[i];
+            need[processIndex][i] += release[i];
+        }
+
     }
 }
