@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
 
 /**
  * Main class for this program. To help you get started, the major
@@ -128,6 +129,21 @@ public class Program3 {
         // as separate methods within this class, as separate classes
         // with their own main methods, or as additional code within
         // this main method.
+        while (true) {
+            if (args[0].equalsIgnoreCase("Manual")) {
+                manualMode();
+                break;
+            } else if (args[0].equalsIgnoreCase("Auto") || args[0].equalsIgnoreCase("Automatic")) {
+                autoMode();
+                break;
+            } else {
+                System.out.println("Mode '" + args[0]
+                        + "' is not recognized. Please choose from 'Manual' or 'Auto / Automatic' modes.");
+                Scanner scanner = new Scanner(System.in);
+                args[0] = scanner.nextLine();
+                scanner.close();
+            }
+        }
 
     }
 
@@ -220,6 +236,10 @@ public class Program3 {
     }
 
     private static void autoMode() {
+
+    }
+
+    class Process implements Runnable {
 
     }
 }
