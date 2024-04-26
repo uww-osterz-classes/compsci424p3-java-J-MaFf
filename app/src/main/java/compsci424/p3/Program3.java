@@ -1,14 +1,5 @@
 /* COMPSCI 424 Program 3
  * Name: Joey Maffiola
- * 
- * This is a template. Program3.java *must* contain the main class
- * for this program. 
- * 
- * You will need to add other classes to complete the program, but
- * there's more than one way to do this. Create a class structure
- * that works for you. Add any classes, methods, and data structures
- * that you need to solve the problem and display your solution in the
- * correct format.
  */
 
 package compsci424.p3;
@@ -23,15 +14,7 @@ import compsci424.p3.BankersAlgo.RequestStatus;
 
 import java.util.Random;
 
-/**
- * Main class for this program. To help you get started, the major
- * steps for the main program are shown as comments in the main
- * method. Feel free to add more comments to help you understand
- * your code, or for any reason. Also feel free to edit this
- * comment to be more helpful.
- */
 public class Program3 {
-    // Declare any class/instance variables that you need here.
     public static BankersAlgo bankersAlgo;
     public static int numResources, numProcesses;
 
