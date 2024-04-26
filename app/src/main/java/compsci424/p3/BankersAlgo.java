@@ -7,12 +7,12 @@ package compsci424.p3;
 
 public class BankersAlgo {
 
-    private int numProcesses;
-    private int numResources;
-    private int[] availableResources;
-    private int[][] maxResources; // Maximum resources that can be allocated to processes
-    private int[][] allocation; // Resources currently allocated to processes
-    private int[][] need; // Resources needed by processes
+    int numProcesses;
+    int numResources;
+    int[] availableResources;
+    int[][] maxResources; // Maximum resources that can be allocated to processes
+    int[][] allocation; // Resources currently allocated to processes
+    int[][] need; // Resources needed by processes
 
     /**
      * Initializes a new instance of the BankersAlgo class.

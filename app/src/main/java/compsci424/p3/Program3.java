@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.Random;
 
 /**
  * Main class for this program. To help you get started, the major
@@ -29,6 +30,7 @@ import java.util.Scanner;
 public class Program3 {
     // Declare any class/instance variables that you need here.
     public static BankersAlgo bankersAlgo;
+    public static int numResources, numProcesses;
 
     /**
      * @param args Command-line arguments.
@@ -65,8 +67,6 @@ public class Program3 {
         // 2. Get the number of resources and processes from the setup
         // file, and use this info to create the Banker's Algorithm
         // data structures
-        int numResources;
-        int numProcesses;
 
         // For simplicity's sake, we'll use one try block to handle
         // possible exceptions for all code that reads the setup file.
@@ -236,20 +236,57 @@ public class Program3 {
     }
 
     private static void autoMode() {
+        Thread[] threads = new Thread[numProcesses];
 
+        for (int i = 0; i < numProcesses; i++) {
+            threads[i] = new Thread(new Runnable() {
+                public void run() {
+                    for (int j = 0; j < 3; j++) {
+                        // Generate random request
+                        int[] request = generateRandomRequest();
+                        synchronized (bankersAlgo) {
+                            bankersAlgo.requestResources(request);
+                        }
+
+                        // Generate random release
+                        int[] release = generateRandomRelease();
+                        synchronized (bankersAlgo) {
+                            bankersAlgo.releaseResources(release);
+                        }
+                    }
+                }
+            });
+
+            threads[i].start();
+        }
+
+        // Wait for all threads to finish
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static int[] generateRandomRequest() {
+        Random random = new Random();
+        int[] request = new int[numResources];
+
+        
+        for (int processId = 0; processId < numProcesses; processId++) {
+            for (int resourceId = 0; resourceId < numResources; resourceId++) {
+                int maxRequest = bankersAlgo.Max[]
+            }
+        }
+
+    
+        return request;
     }
 
     private static void output() {
 
     }
 
-    class Process implements Runnable {
-
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'run'");
-        }
-
-    }
 }
