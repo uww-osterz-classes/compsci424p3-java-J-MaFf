@@ -238,12 +238,12 @@ public class Program3 {
     private static void autoMode() {
         Thread[] threads = new Thread[numProcesses];
 
-        for (int i = 0; i < numProcesses; i++) {
-            threads[i] = new Thread(new Runnable() {
+        for (int processID = 0; processID < numProcesses; processID++) {
+            threads[processID] = new Thread(new Runnable() {
                 public void run() {
                     for (int j = 0; j < 3; j++) {
                         // Generate random request
-                        int[] request = generateRandomRequest();
+                        int[] request = generateRandomRequest(processID);
                         synchronized (bankersAlgo) {
                             bankersAlgo.requestResources(request);
                         }
@@ -257,7 +257,7 @@ public class Program3 {
                 }
             });
 
-            threads[i].start();
+            threads[processID].start();
         }
 
         // Wait for all threads to finish
@@ -270,19 +270,35 @@ public class Program3 {
         }
     }
 
-    private static int[] generateRandomRequest() {
+    /**
+     * Generates a random resource request for a given process ID.
+     *
+     * @param pID the process ID for which the resource request is generated
+     * @return an array representing the randomly generated resource request
+     */
+    private static int[] generateRandomRequest(int pID) {
         Random random = new Random();
         int[] request = new int[numResources];
 
-        
-        for (int processId = 0; processId < numProcesses; processId++) {
-            for (int resourceId = 0; resourceId < numResources; resourceId++) {
-                int maxRequest = bankersAlgo.Max[]
-            }
+        for (int resourceId = 0; resourceId < numResources; resourceId++) {
+            int maxRequest = bankersAlgo.maxResources[pID][resourceId]; // NOt sure
+            // Generate a random number between 0 and maxRequest
+            request[resourceId] = random.nextInt(maxRequest + 1);
+        }
+        return request;
+    }
+
+    private static int[] generateRandomRelease(int pID) {
+        Random random = new Random();
+        int[] release = new int[numResources];
+
+        for (int resourceId = 0; resourceId < numResources; resourceId++) {
+            int allocation = bankersAlgo.allocation[pID][resourceId];
+            // Generate a random number between 0 and allocation
+            release[resourceId] = random.nextInt(allocation + 1);
         }
 
-    
-        return request;
+        return release;
     }
 
     private static void output() {
