@@ -234,8 +234,47 @@ public class Program3 {
         return allocatedResources;
     }
 
-    private static void manualMode() {
-
+    /**
+     * Enters the manual mode where the user can input commands to interact with the
+     * program.
+     * The user can enter commands to request or release resources for a specific
+     * process.
+     * The method reads the user's input, parses the command, and performs the
+     * corresponding action.
+     * The manual mode continues until the user enters the "end" command to exit the
+     * program.
+     */
+    public static void manualMode() {
+        Scanner scanner = new Scanner(System.in);
+        String command;
+        while (true) {
+            System.out.print("Enter command: ");
+            command = scanner.nextLine();
+            String[] parts = command.split(" ");
+            if (parts[0].equalsIgnoreCase("end")) {
+                System.out.println("Exiting program...");
+                break;
+            } else if (parts[0].equalsIgnoreCase("request")) {
+                int numUnits = Integer.parseInt(parts[1]);
+                int resourceType = Integer.parseInt(parts[3]);
+                int processId = Integer.parseInt(parts[5]);
+                int[] request = new int[numResources];
+                request[resourceType] = numUnits;
+                RequestStatus status = bankersAlgo.requestResources(processId, request);
+                output(processId, request, status, true);
+            } else if (parts[0].equalsIgnoreCase("release")) {
+                int numUnits = Integer.parseInt(parts[1]);
+                int resourceType = Integer.parseInt(parts[3]);
+                int processId = Integer.parseInt(parts[5]);
+                int[] release = new int[numResources];
+                release[resourceType] = numUnits;
+                bankersAlgo.releaseResources(processId, release);
+                output(processId, release, RequestStatus.GRANTED, false);
+            } else {
+                System.out.println("Invalid command. Please enter a valid command.");
+            }
+        }
+        scanner.close();
     }
 
     private static void autoMode() {
