@@ -239,7 +239,17 @@ public class Program3 {
 
     }
 
+    private static void output() {
+
+    }
+
     class Process implements Runnable {
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'run'");
+        }
 
     }
 }
