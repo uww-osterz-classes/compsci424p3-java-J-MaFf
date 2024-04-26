@@ -17,6 +17,11 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
+
+import compsci424.p3.BankersAlgo.RequestStatus;
+
+import java.util.Random;
 
 /**
  * Main class for this program. To help you get started, the major
@@ -27,6 +32,8 @@ import java.io.IOException;
  */
 public class Program3 {
     // Declare any class/instance variables that you need here.
+    public static BankersAlgo bankersAlgo;
+    public static int numResources, numProcesses;
 
     /**
      * @param args Command-line arguments.
@@ -63,8 +70,6 @@ public class Program3 {
         // 2. Get the number of resources and processes from the setup
         // file, and use this info to create the Banker's Algorithm
         // data structures
-        int numResources;
-        int numProcesses;
 
         // For simplicity's sake, we'll use one try block to handle
         // possible exceptions for all code that reads the setup file.
@@ -103,7 +108,7 @@ public class Program3 {
 
             setupFileReader.close(); // done reading the file, so close it
 
-            BankersAlgo bankersAlgo = new BankersAlgo(numProcesses, numResources, availableResources, maxResources,
+            bankersAlgo = new BankersAlgo(numProcesses, numResources, availableResources, maxResources,
                     allocation);
         } catch (IOException e) {
             System.err.println("Something went wrong while reading setup file "
@@ -117,11 +122,31 @@ public class Program3 {
         // beginning in a safe state: see "Check initial conditions"
         // in the Program 3 instructions
 
+        if (!bankersAlgo.isSafe()) {
+            System.err.println("Initial conditions are not safe.");
+            System.exit(-1); // exit with an error code
+        }
+
         // 5. Go into either manual or automatic mode, depending on
         // the value of args[0]; you could implement these two modes
         // as separate methods within this class, as separate classes
         // with their own main methods, or as additional code within
         // this main method.
+        while (true) {
+            if (args[0].equalsIgnoreCase("Manual")) {
+                manualMode();
+                break;
+            } else if (args[0].equalsIgnoreCase("Auto") || args[0].equalsIgnoreCase("Automatic")) {
+                autoMode();
+                break;
+            } else {
+                System.out.println("Mode '" + args[0]
+                        + "' is not recognized. Please choose from 'Manual' or 'Auto / Automatic' modes.");
+                Scanner scanner = new Scanner(System.in);
+                args[0] = scanner.nextLine();
+                scanner.close();
+            }
+        }
 
     }
 
@@ -208,4 +233,153 @@ public class Program3 {
         }
         return allocatedResources;
     }
+
+    /**
+     * Enters the manual mode where the user can input commands to interact with the
+     * program.
+     * The user can enter commands to request or release resources for a specific
+     * process.
+     * The method reads the user's input, parses the command, and performs the
+     * corresponding action.
+     * The manual mode continues until the user enters the "end" command to exit the
+     * program.
+     */
+    public static void manualMode() {
+        Scanner scanner = new Scanner(System.in);
+        String command;
+        while (true) {
+            System.out.print("Enter command: ");
+            command = scanner.nextLine();
+            String[] parts = command.split(" ");
+            if (parts[0].equalsIgnoreCase("end")) {
+                System.out.println("Exiting program...");
+                break;
+            } else if (parts[0].equalsIgnoreCase("request")) {
+                int numUnits = Integer.parseInt(parts[1]);
+                int resourceType = Integer.parseInt(parts[3]);
+                int processId = Integer.parseInt(parts[5]);
+                int[] request = new int[numResources];
+                request[resourceType] = numUnits;
+                RequestStatus status = bankersAlgo.requestResources(processId, request);
+                output(processId, request, status, true);
+            } else if (parts[0].equalsIgnoreCase("release")) {
+                int numUnits = Integer.parseInt(parts[1]);
+                int resourceType = Integer.parseInt(parts[3]);
+                int processId = Integer.parseInt(parts[5]);
+                int[] release = new int[numResources];
+                release[resourceType] = numUnits;
+                bankersAlgo.releaseResources(processId, release);
+                output(processId, release, RequestStatus.GRANTED, false);
+            } else {
+                System.out.println("Invalid command. Please enter a valid command.");
+            }
+        }
+        scanner.close();
+    }
+
+    private static void autoMode() {
+        Thread[] threads = new Thread[numProcesses];
+
+        for (int processID = 0; processID < numProcesses; processID++) {
+            int pID = processID;
+            threads[pID] = new Thread(new Runnable() {
+                public void run() {
+                    for (int j = 0; j < 3; j++) {
+                        // Generate random request
+
+                        int[] request = generateRandomRequest(pID);
+                        synchronized (bankersAlgo) {
+                            RequestStatus status = bankersAlgo.requestResources(pID, request);
+                            output(pID, request, status, true);
+                            // if (status == RequestStatus.GRANTED) {
+                            // System.out.println("Process " + pID + " has been granted resources.");
+                            // } else if (status == RequestStatus.DENIED) {
+                            // System.out.println("Process " + pID + " has been denied resources.");
+                            // } else {
+                            // System.out.println("Process " + pID + " has made an invalid request.");
+                            // }
+                        }
+
+                        // Generate random release
+                        int[] release = generateRandomRelease(pID);
+                        synchronized (bankersAlgo) {
+                            bankersAlgo.releaseResources(pID, release);
+                            output(pID, release, RequestStatus.GRANTED, false);
+                        }
+                    }
+                }
+            });
+
+            threads[pID].start();
+        }
+
+        // Wait for all threads to finish
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Generates a random resource request for a given process ID.
+     *
+     * @param pID the process ID for which the resource request is generated
+     * @return an array representing the randomly generated resource request
+     */
+    private static int[] generateRandomRequest(int pID) {
+        Random random = new Random();
+        int[] request = new int[numResources];
+
+        for (int resourceId = 0; resourceId < numResources; resourceId++) {
+            int maxRequest = bankersAlgo.maxResources[pID][resourceId]; // NOt sure
+            // Generate a random number between 0 and maxRequest
+            request[resourceId] = random.nextInt(maxRequest + 1);
+        }
+        return request;
+    }
+
+    /**
+     * Generates a random release array for a given process ID.
+     *
+     * @param pID the process ID
+     * @return an array of randomly generated release values
+     */
+    private static int[] generateRandomRelease(int pID) {
+        Random random = new Random();
+        int[] release = new int[numResources];
+
+        for (int resourceId = 0; resourceId < numResources; resourceId++) {
+            int allocation = bankersAlgo.allocation[pID][resourceId];
+            // Generate a random number between 0 and allocation
+            release[resourceId] = random.nextInt(allocation + 1);
+        }
+
+        return release;
+    }
+
+    public static void output(int processIndex, int[] requestOrRelease, RequestStatus status, boolean isRequest) {
+        String action = isRequest ? "requests" : "releases";
+        String result = "";
+        switch (status) {
+            case GRANTED:
+                result = isRequest ? "granted" : "completed";
+                break;
+            case DENIED:
+                result = "denied";
+                break;
+            case INVALID:
+                result = "invalid";
+                break;
+        }
+        for (int i = 0; i < requestOrRelease.length; i++) {
+            if (requestOrRelease[i] > 0) {
+                System.out.println("Process " + processIndex + " " + action + " " + requestOrRelease[i]
+                        + " units of resource " + i + ": " + result);
+            }
+        }
+    }
+
 }

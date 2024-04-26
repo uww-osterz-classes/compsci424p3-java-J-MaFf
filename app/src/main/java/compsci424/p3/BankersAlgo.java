@@ -1,16 +1,18 @@
-package compsci424.p3;
-
 /**
  * Represents the Banker's Algorithm for resource allocation.
+ * 
+ * ------ NOT CURRENTLY MULTITHREADED ------------
  */
+package compsci424.p3;
+
 public class BankersAlgo {
 
-    private int numProcesses;
-    private int numResources;
-    private int[] availableResources;
-    private int[][] maxResources; // Maximum resources that can be allocated to processes
-    private int[][] allocation; // Resources currently allocated to processes
-    private int[][] need; // Resources needed by processes
+    int numProcesses;
+    int numResources;
+    int[] availableResources;
+    int[][] maxResources; // Maximum resources that can be allocated to processes
+    int[][] allocation; // Resources currently allocated to processes
+    int[][] need; // Resources needed by processes
 
     /**
      * Initializes a new instance of the BankersAlgo class.
@@ -52,9 +54,7 @@ public class BankersAlgo {
      * @return true if the system is in a safe state, false otherwise.
      */
     public boolean isSafe() {
-        // Initialize a boolean array 'finish' to keep track of processes that have
-        // finished execution
-        boolean[] finish = new boolean[numProcesses];
+        boolean[] finish = new boolean[numProcesses]; // keep track of processes that have finished execution
 
         // Initialize an integer array 'work' to represent the available resources
         int[] work = new int[numResources];
@@ -116,6 +116,81 @@ public class BankersAlgo {
         }
 
         // If all processes have finished execution, return true
+        return true;
+    }
+
+    /**
+     * Represents the status of a resource request in the Banker's Algorithm.
+     * The possible values are:
+     * - GRANTED: The request has been granted.
+     * - DENIED: The request has been denied.
+     * - INVALID: The request is invalid.
+     */
+    public enum RequestStatus {
+        GRANTED, DENIED, INVALID
+    }
+
+    /**
+     * Requests the specified resources for the given process.
+     * 
+     * @param processIndex the index of the process
+     * @param request      an array representing the resources to be requested
+     * @return the status of the request
+     */
+    public RequestStatus requestResources(int processIndex, int[] request) {
+        // Check if the request is valid
+        for (int i = 0; i < numResources; i++) {
+            if (request[i] > need[processIndex][i]) {
+                return RequestStatus.INVALID;
+            }
+            if (request[i] > availableResources[i]) {
+                return RequestStatus.INVALID;
+            }
+        }
+
+        // Assume that the request is granted
+        for (int i = 0; i < numResources; i++) {
+            availableResources[i] -= request[i];
+            allocation[processIndex][i] += request[i];
+            need[processIndex][i] -= request[i];
+        }
+
+        // Check if the system is in a safe state
+        if (isSafe()) {
+            return RequestStatus.GRANTED;
+        } else {
+            // If the system is not in a safe state, revert the changes
+            for (int i = 0; i < numResources; i++) {
+                availableResources[i] += request[i];
+                allocation[processIndex][i] -= request[i];
+                need[processIndex][i] += request[i];
+            }
+            return RequestStatus.DENIED;
+        }
+    }
+
+    /**
+     * Releases the specified resources from the given process.
+     *
+     * @param processIndex the index of the process
+     * @param release      an array representing the resources to be released
+     */
+    public boolean releaseResources(int processIndex, int[] release) {
+        // Check if the release is valid
+        for (int i = 0; i < numResources; i++) {
+            if (release[i] < 0 || release[i] > allocation[processIndex][i]) {
+                System.out.println("Error: Invalid release amount");
+                return false; // Do not change the arrays
+            }
+        }
+
+        // Release the resources
+        for (int i = 0; i < numResources; i++) {
+            availableResources[i] += release[i];
+            allocation[processIndex][i] -= release[i];
+            need[processIndex][i] += release[i];
+        }
+
         return true;
     }
 }
