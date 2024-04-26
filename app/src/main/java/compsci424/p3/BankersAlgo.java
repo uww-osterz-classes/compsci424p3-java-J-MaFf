@@ -118,4 +118,40 @@ public class BankersAlgo {
         // If all processes have finished execution, return true
         return true;
     }
+
+    public enum RequestStatus {
+        GRANTED, DENIED, INVALID
+    }
+
+    public RequestStatus requestResources(int processIndex, int[] request) {
+        // Check if the request is valid
+        for (int i = 0; i < numResources; i++) {
+            if (request[i] > need[processIndex][i]) {
+                return RequestStatus.INVALID;
+            }
+            if (request[i] > availableResources[i]) {
+                return RequestStatus.INVALID;
+            }
+        }
+
+        // Assume that the request is granted
+        for (int i = 0; i < numResources; i++) {
+            availableResources[i] -= request[i];
+            allocation[processIndex][i] += request[i];
+            need[processIndex][i] -= request[i];
+        }
+
+        // Check if the system is in a safe state
+        if (isSafe()) {
+            return RequestStatus.GRANTED;
+        } else {
+            // If the system is not in a safe state, revert the changes
+            for (int i = 0; i < numResources; i++) {
+                availableResources[i] += request[i];
+                allocation[processIndex][i] -= request[i];
+                need[processIndex][i] += request[i];
+            }
+            return RequestStatus.DENIED;
+        }
+    }
 }
