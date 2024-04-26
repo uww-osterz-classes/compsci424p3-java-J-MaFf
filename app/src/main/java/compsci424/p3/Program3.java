@@ -288,6 +288,12 @@ public class Program3 {
         return request;
     }
 
+    /**
+     * Generates a random release array for a given process ID.
+     *
+     * @param pID the process ID
+     * @return an array of randomly generated release values
+     */
     private static int[] generateRandomRelease(int pID) {
         Random random = new Random();
         int[] release = new int[numResources];
